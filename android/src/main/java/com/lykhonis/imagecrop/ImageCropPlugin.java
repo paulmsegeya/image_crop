@@ -171,7 +171,7 @@ public final class ImageCropPlugin implements MethodCallHandler, PluginRegistry.
                 try {
                     File dstFile = createTemporaryImageFile();
                     compressBitmap(bitmap, dstFile);
-                    //copyExif(srcFile, dstFile);
+                    copyExif(srcFile, dstFile);
                     result.success(dstFile.getAbsolutePath());
                 } catch (IOException e) {
                     result.error("INVALID", "Image could not be saved", e);
