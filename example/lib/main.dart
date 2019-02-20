@@ -31,6 +31,7 @@ class _MyAppState extends State<MyApp> {
   File _file;
   File _sample;
   File _lastCropped;
+  bool showResult = false;
 
   @override
   void dispose() {
@@ -62,7 +63,7 @@ class _MyAppState extends State<MyApp> {
     return Column(
       children: <Widget>[
         Expanded(
-          child: Crop.file(_sample, key: cropKey, aspectRatio: 1.25,),
+          child: !showResult?Crop.file(_sample, key: cropKey, aspectRatio: 0.8,):Image.file(_lastCropped, fit: BoxFit.fitHeight,),
         ),
         Container(
           padding: const EdgeInsets.only(top: 20.0),
@@ -96,7 +97,10 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _openImage() async {
-    final file = await ImagePicker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      showResult = false;
+    });
+    final file = await ImagePicker.pickImage(source: ImageSource.camera);
     final sample = await ImageCrop.sampleImage(
       file: file,
       preferredSize: context.size.longestSide.ceil(),
@@ -129,13 +133,16 @@ _sample?.delete();
     final file = await ImageCrop.cropImage(
       file: sample,
       area: area,
+      portrait: true
     );
 
     sample.delete();
 
     _lastCropped?.delete();
     _lastCropped = file;
-  
+    setState(() {
+      showResult = true;
+    });
     debugPrint('$file');
   }
 }

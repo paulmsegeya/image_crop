@@ -65,8 +65,9 @@ public final class ImageCropPlugin implements MethodCallHandler, PluginRegistry.
             double top = call.argument("top");
             double right = call.argument("right");
             double bottom = call.argument("bottom");
+            boolean portrait = call.argument("portrait");
             RectF area = new RectF((float) left, (float) top, (float) right, (float) bottom);
-            cropImage(path, area, (float) scale, result);
+            cropImage(path, area, (float) scale, result, portrait);
         } else if ("sampleImage".equals(call.method)) {
             String path = call.argument("path");
             int maximumWidth = call.argument("maximumWidth");
@@ -82,7 +83,7 @@ public final class ImageCropPlugin implements MethodCallHandler, PluginRegistry.
         }
     }
 
-    private void cropImage(final String path, final RectF area, final float scale, final Result result) {
+    private void cropImage(final String path, final RectF area, final float scale, final Result result, final boolean portrait) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -92,17 +93,23 @@ public final class ImageCropPlugin implements MethodCallHandler, PluginRegistry.
                     return;
                 }
 
-                Bitmap srcBitmap = BitmapFactory.decodeFile(path, null);
+                Bitmap srcBitmap = BitmapFactory.decodeFile(path);
                 if (srcBitmap == null) {
                     result.error("INVALID", "Image source cannot be decoded", null);
                     return;
                 }
-                /*try {
+
+                try {
                     srcBitmap = rotateImageIfRequired(srcBitmap,srcFile);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    srcBitmap = BitmapFactory.decodeFile(path, null);
-                }*/
+                    compressBitmap(srcBitmap, srcFile);
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+                srcBitmap = BitmapFactory.decodeFile(path);
+                if (srcBitmap == null) {
+                    result.error("INVALID", "Image source cannot be decoded", null);
+                    return;
+                }
 
                 int width = (int) (srcBitmap.getWidth() * area.width() * scale);
                 int height = (int) (srcBitmap.getHeight() * area.height() * scale);
@@ -117,13 +124,14 @@ public final class ImageCropPlugin implements MethodCallHandler, PluginRegistry.
 
                 Rect srcRect = new Rect((int) (srcBitmap.getWidth() * area.left), (int) (srcBitmap.getHeight() * area.top),
                         (int) (srcBitmap.getWidth() * area.right), (int) (srcBitmap.getHeight() * area.bottom));
+                Bitmap croppedBmp = Bitmap.createBitmap(srcBitmap, (int) (srcBitmap.getWidth() * area.left), (int) (srcBitmap.getHeight() * area.top), width, height);
                 Rect dstRect = new Rect(0, 0, width, height);
-
                 canvas.drawBitmap(srcBitmap, srcRect, dstRect, paint);
-
+                Log.d(ImageCropPlugin.class.getSimpleName(),"srcW: "+srcBitmap.getWidth()+ "srcH: "+ srcBitmap.getHeight());
+                Log.d(ImageCropPlugin.class.getSimpleName(),"width: "+width+" Height: "+height );
                 try {
                     File dstFile = createTemporaryImageFile();
-                    compressBitmap(dstBitmap, dstFile);
+                    compressBitmap(croppedBmp, dstFile);
                     copyExif(srcFile, dstFile);
                     result.success(dstFile.getAbsolutePath());
                 } catch (IOException e) {
@@ -337,7 +345,7 @@ public final class ImageCropPlugin implements MethodCallHandler, PluginRegistry.
                 return rotateImage(img, 180);
             case ExifInterface.ORIENTATION_ROTATE_270:
                 Log.d(ImageCropPlugin.class.getSimpleName(),"Rotation 270");
-                return rotateImage(img, 270);
+                return rotateImage(img, 180);
             case ExifInterface.ORIENTATION_NORMAL:
             default:
                 Log.d(ImageCropPlugin.class.getSimpleName(),"Rotation NO");
@@ -350,6 +358,7 @@ public final class ImageCropPlugin implements MethodCallHandler, PluginRegistry.
         matrix.postRotate(degree);
         Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
         img.recycle();
+        Log.d(ImageCropPlugin.class.getSimpleName(),"Rotating "+degree);
         return rotatedImg;
     }
 }

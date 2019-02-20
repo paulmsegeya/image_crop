@@ -48,6 +48,7 @@ class ImageCrop {
     File file,
     Rect area,
     double scale,
+    bool portrait
   }) {
     assert(file != null);
     assert(area != null);
@@ -58,6 +59,7 @@ class ImageCrop {
       'right': area.right,
       'bottom': area.bottom,
       'scale': scale ?? 1.0,
+      'portrait': portrait
     }).then<File>((result) => File(result));
   }
 
