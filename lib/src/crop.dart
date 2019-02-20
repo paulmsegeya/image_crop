@@ -136,8 +136,8 @@ class CropState extends State<Crop> with TickerProviderStateMixin, Drag {
       _getImage();
     } else if (widget.aspectRatio != oldWidget.aspectRatio) {
       _area = _calculateDefaultArea(
-        viewWidth: _view.width-.01,
-        viewHeight: _view.height-.01,
+        viewWidth: _view.width,
+        viewHeight: _view.height,
         imageWidth: _image?.width,
         imageHeight: _image?.height,
       );
