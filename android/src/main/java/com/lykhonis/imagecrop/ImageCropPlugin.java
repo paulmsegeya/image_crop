@@ -334,18 +334,18 @@ public final class ImageCropPlugin implements MethodCallHandler, PluginRegistry.
 
         ExifInterface ei = new ExifInterface(selectedImage.getAbsolutePath());
         int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
-                ExifInterface.ORIENTATION_UNDEFINED);
+                1);
 
         switch (orientation) {
-            case ExifInterface.ORIENTATION_ROTATE_90:
+           /* case ExifInterface.ORIENTATION_ROTATE_90:
                 Log.d(ImageCropPlugin.class.getSimpleName(),"Rotation 90");
                 return rotateImage(img, 90);
             case ExifInterface.ORIENTATION_ROTATE_180:
                 Log.d(ImageCropPlugin.class.getSimpleName(),"Rotation 180");
-                return rotateImage(img, 180);
+                return rotateImage(img, 180);*/
             case ExifInterface.ORIENTATION_ROTATE_270:
                 Log.d(ImageCropPlugin.class.getSimpleName(),"Rotation 270");
-                return rotateImage(img, 180);
+                return rotateImage(img, 270);
             case ExifInterface.ORIENTATION_NORMAL:
             default:
                 Log.d(ImageCropPlugin.class.getSimpleName(),"Rotation NO");
