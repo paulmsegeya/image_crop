@@ -97,12 +97,12 @@ public final class ImageCropPlugin implements MethodCallHandler, PluginRegistry.
                     result.error("INVALID", "Image source cannot be decoded", null);
                     return;
                 }
-                try {
+                /*try {
                     srcBitmap = rotateImageIfRequired(srcBitmap,srcFile);
                 } catch (IOException e) {
                     e.printStackTrace();
                     srcBitmap = BitmapFactory.decodeFile(path, null);
-                }
+                }*/
 
                 int width = (int) (srcBitmap.getWidth() * area.width() * scale);
                 int height = (int) (srcBitmap.getHeight() * area.height() * scale);
@@ -171,7 +171,7 @@ public final class ImageCropPlugin implements MethodCallHandler, PluginRegistry.
                 try {
                     File dstFile = createTemporaryImageFile();
                     compressBitmap(bitmap, dstFile);
-                    copyExif(srcFile, dstFile);
+                    //copyExif(srcFile, dstFile);
                     result.success(dstFile.getAbsolutePath());
                 } catch (IOException e) {
                     result.error("INVALID", "Image could not be saved", e);
