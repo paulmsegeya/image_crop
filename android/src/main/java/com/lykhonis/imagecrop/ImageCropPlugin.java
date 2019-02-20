@@ -116,7 +116,7 @@ public final class ImageCropPlugin implements MethodCallHandler, PluginRegistry.
                 paint.setDither(true);
 
                 Rect srcRect = new Rect((int) (srcBitmap.getWidth() * area.left), (int) (srcBitmap.getHeight() * area.top),
-                                        (int) (srcBitmap.getWidth() * area.right), (int) (srcBitmap.getHeight() * area.bottom));
+                        (int) (srcBitmap.getWidth() * area.right), (int) (srcBitmap.getHeight() * area.bottom));
                 Rect dstRect = new Rect(0, 0, width, height);
 
                 canvas.drawBitmap(srcBitmap, srcRect, dstRect, paint);
@@ -258,7 +258,7 @@ public final class ImageCropPlugin implements MethodCallHandler, PluginRegistry.
             int readExternalStorage = getPermissionGrantResult(READ_EXTERNAL_STORAGE, permissions, grantResults);
             int writeExternalStorage = getPermissionGrantResult(WRITE_EXTERNAL_STORAGE, permissions, grantResults);
             permissionRequestResult.success(readExternalStorage == PackageManager.PERMISSION_GRANTED &&
-                                                    writeExternalStorage == PackageManager.PERMISSION_GRANTED);
+                    writeExternalStorage == PackageManager.PERMISSION_GRANTED);
             permissionRequestResult = null;
         }
         return false;
@@ -308,6 +308,9 @@ public final class ImageCropPlugin implements MethodCallHandler, PluginRegistry.
 
             for (String tag : tags) {
                 String attribute = sourceExif.getAttribute(tag);
+                if(tag ==  ExifInterface.TAG_ORIENTATION){
+                    Log.i(ImageCropPlugin.class.getSimpleName(), "Orientation: "+attribute);
+                }
                 if (attribute != null) {
                     destinationExif.setAttribute(tag, attribute);
                 }
@@ -327,13 +330,17 @@ public final class ImageCropPlugin implements MethodCallHandler, PluginRegistry.
 
         switch (orientation) {
             case ExifInterface.ORIENTATION_ROTATE_90:
+                Log.d(ImageCropPlugin.class.getSimpleName(),"Rotation 90");
                 return rotateImage(img, 90);
             case ExifInterface.ORIENTATION_ROTATE_180:
+                Log.d(ImageCropPlugin.class.getSimpleName(),"Rotation 180");
                 return rotateImage(img, 180);
             case ExifInterface.ORIENTATION_ROTATE_270:
+                Log.d(ImageCropPlugin.class.getSimpleName(),"Rotation 270");
                 return rotateImage(img, 270);
             case ExifInterface.ORIENTATION_NORMAL:
             default:
+                Log.d(ImageCropPlugin.class.getSimpleName(),"Rotation NO");
                 return img;
         }
     }
