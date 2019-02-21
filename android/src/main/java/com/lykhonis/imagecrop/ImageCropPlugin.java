@@ -101,15 +101,18 @@ public final class ImageCropPlugin implements MethodCallHandler, PluginRegistry.
 
                 try {
                     srcBitmap = rotateImageIfRequired(srcBitmap,srcFile);
-                    compressBitmap(srcBitmap, srcFile);
+                    File tempFile = createTemporaryImageFile();
+                    compressBitmap(srcBitmap, tempFile);
+                    srcBitmap = BitmapFactory.decodeFile(tempFile.getAbsolutePath());
+                    tempFile.delete();
+                    if (srcBitmap == null) {
+                        result.error("INVALID", "Image source cannot be decoded", null);
+                        return;
+                    }
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                 }
-                srcBitmap = BitmapFactory.decodeFile(path);
-                if (srcBitmap == null) {
-                    result.error("INVALID", "Image source cannot be decoded", null);
-                    return;
-                }
+
 
                 int width = (int) (srcBitmap.getWidth() * area.width() * scale);
                 int height = (int) (srcBitmap.getHeight() * area.height() * scale);
