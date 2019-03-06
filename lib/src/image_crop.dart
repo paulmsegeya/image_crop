@@ -53,8 +53,11 @@ class ImageCrop {
     assert(file != null);
     assert(area != null);
     if(Io.Platform.isAndroid){
+
       Img.Image image= Img.decodeImage(file.readAsBytesSync());
-      image = Img.copyCrop(image, area.left.toInt(), area.top.toInt(), area.width.toInt(), area.height.toInt());
+      int width =(image.width * area.width * scale).toInt();
+      int height = (image.height * area.height * scale).toInt();
+      image = Img.copyCrop(image, area.left.toInt(), area.top.toInt(), width, height);
       var directory = await getApplicationDocumentsDirectory();
       var newFile = new File('${directory.path}/cropp${DateTime.now().toString()}.jpg');
       return newFile..writeAsBytesSync(Img.encodeJpg(image));
