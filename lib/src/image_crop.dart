@@ -55,7 +55,9 @@ class ImageCrop {
     if(Io.Platform.isAndroid){
       Img.Image image= Img.decodeImage(file.readAsBytesSync());
       image = Img.copyCrop(image, area.left.toInt(), area.top.toInt(), area.width.toInt(), area.height.toInt());
-      return Io.File("cropp"+DateTime.now().toString()+"jpg")..writeAsBytesSync(Img.encodeJpg(image));
+      var directory = await getApplicationDocumentsDirectory();
+      var newFile = new File('${directory.path}/cropp${DateTime.now().toString()}.jpg');
+      return newFile..writeAsBytesSync(Img.encodeJpg(image));
     }else{
       return _channel.invokeMethod('cropImage', {
         'path': file.path,

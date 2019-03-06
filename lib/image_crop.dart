@@ -11,6 +11,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as Img;
 import 'dart:io' as Io;
+import 'package:path_provider/path_provider.dart';
 
 part 'src/image_crop.dart';
 part 'src/crop.dart';
