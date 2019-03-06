@@ -49,18 +49,24 @@ class ImageCrop {
     Rect area,
     double scale,
     bool portrait
-  }) {
+  }) async {
     assert(file != null);
     assert(area != null);
-    return _channel.invokeMethod('cropImage', {
-      'path': file.path,
-      'left': area.left,
-      'top': area.top,
-      'right': area.right,
-      'bottom': area.bottom,
-      'scale': scale ?? 1.0,
-      'portrait': portrait
-    }).then<File>((result) => File(result));
+    if(Io.Platform.isAndroid){
+      Img.Image image= Img.decodeImage(file.readAsBytesSync());
+      image = Img.copyCrop(image, area.left.toInt(), area.top.toInt(), area.width.toInt(), area.height.toInt());
+      return Io.File("cropp"+DateTime.now().toString()+"jpg")..writeAsBytesSync(Img.encodeJpg(image));
+    }else{
+      return _channel.invokeMethod('cropImage', {
+        'path': file.path,
+        'left': area.left,
+        'top': area.top,
+        'right': area.right,
+        'bottom': area.bottom,
+        'scale': scale ?? 1.0,
+        'portrait': portrait
+      }).then<File>((result) => File(result));
+    }
   }
 
   static Future<File> sampleImage({
