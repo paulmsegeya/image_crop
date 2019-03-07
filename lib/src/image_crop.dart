@@ -52,16 +52,16 @@ class ImageCrop {
   }) async {
     assert(file != null);
     assert(area != null);
-    if(Io.Platform.isAndroid && !portrait){
+    if(Io.Platform.isAndroid){
 
       Img.Image image= Img.decodeImage(file.readAsBytesSync());
 
       int topOffset = (image.height*area.top).toInt();
       int leftOffset = (image.width*area.left).toInt();
-      int bottomOffset = image.height - (image.height*area.bottom).toInt();
-      int rightOffset = image.width - (image.width*area.right).toInt();
-      int width =image.width - rightOffset - leftOffset;
-      int height = image.height - bottomOffset - topOffset;
+      int bottomOffset = (image.height*area.right).toInt();
+      int rightOffset = (image.width*area.bottom).toInt();
+      int width =(image.width *area.right).toInt();
+      int height = (image.height*area.bottom).toInt();
       image = Img.copyCrop(image, leftOffset, topOffset, width, height);
       var directory = await getApplicationDocumentsDirectory();
       var newFile = new File('${directory.path}/cropp${DateTime.now().toString()}.jpg');

@@ -63,7 +63,7 @@ class _MyAppState extends State<MyApp> {
     return Column(
       children: <Widget>[
         Expanded(
-          child: !showResult?Crop.file(_sample, key: cropKey, aspectRatio: 0.8,):Image.file(_lastCropped, fit: BoxFit.fitHeight,),
+          child: !showResult?Crop.file(_sample, key: cropKey, aspectRatio: 1.25,):Image.file(_lastCropped, fit: BoxFit.contain,),
         ),
         Container(
           padding: const EdgeInsets.only(top: 20.0),
@@ -125,18 +125,14 @@ _sample?.delete();
 
     // scale up to use maximum possible number of pixels
     // this will sample image in higher resolution to make cropped image larger
-    final sample = await ImageCrop.sampleImage(
-      file: _file,
-      preferredSize: (2000 / scale).round(),
-    );
 
     final file = await ImageCrop.cropImage(
-      file: sample,
+      file: _file,
       area: area,
       portrait: true
     );
 
-    sample.delete();
+    _file.delete();
 
     _lastCropped?.delete();
     _lastCropped = file;
