@@ -63,7 +63,7 @@ class _MyAppState extends State<MyApp> {
     return Column(
       children: <Widget>[
         Expanded(
-          child: !showResult?Crop.file(_sample, key: cropKey, aspectRatio: 1.25,):Image.file(_lastCropped, fit: BoxFit.contain,),
+          child: !showResult?Crop.file(_sample, key: cropKey, aspectRatio: 0.8,):Image.file(_lastCropped, fit: BoxFit.contain,),
         ),
         Container(
           padding: const EdgeInsets.only(top: 20.0),
@@ -100,7 +100,7 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       showResult = false;
     });
-    final file = await ImagePicker.pickImage(source: ImageSource.camera);
+    final file = await ImagePicker.pickImage(source: ImageSource.camera, maxWidth: 1080.0, maxHeight: 1080.0);
     final sample = await ImageCrop.sampleImage(
       file: file,
       preferredSize: context.size.longestSide.ceil(),
