@@ -52,7 +52,7 @@ class ImageCrop {
   }) async {
     assert(file != null);
     assert(area != null);
-    if(Io.Platform.isAndroid){
+    if(Io.Platform.isAndroid && portrait){
 
       Img.Image image= Img.decodeImage(file.readAsBytesSync());
 
