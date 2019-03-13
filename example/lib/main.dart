@@ -63,7 +63,7 @@ class _MyAppState extends State<MyApp> {
     return Column(
       children: <Widget>[
         Expanded(
-          child: !showResult?Crop.file(_sample, key: cropKey, aspectRatio: 0.8,):Image.file(_lastCropped, fit: BoxFit.contain,),
+            child: !showResult?Crop.file(_sample, key: cropKey, aspectRatio: 1.25,):Image.file(_lastCropped, fit: BoxFit.contain,),
         ),
         Container(
           padding: const EdgeInsets.only(top: 20.0),
@@ -129,7 +129,7 @@ _sample?.delete();
     final file = await ImageCrop.cropImage(
       file: _file,
       area: area,
-      portrait: true
+      portrait: false
     );
 
     _file.delete();

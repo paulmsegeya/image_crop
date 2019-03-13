@@ -66,7 +66,7 @@ class ImageCrop {
       if(portrait){
         image = Img.copyCrop(image, leftOffset, topOffset, width, height);
       }else{
-        image = Img.copyCrop(image, height, 0, height, width);
+        image = Img.copyCrop(image, topOffset, 0, bottomOffset, width);
       }
       var directory = await getApplicationDocumentsDirectory();
       var newFile = new File('${directory.path}/cropp${DateTime.now().toString()}.jpg');
