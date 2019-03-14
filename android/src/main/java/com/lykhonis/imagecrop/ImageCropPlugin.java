@@ -114,8 +114,8 @@ public final class ImageCropPlugin implements MethodCallHandler, PluginRegistry.
                 }
 
 
-                int width = (int) (srcBitmap.getWidth() * area.width());
-                int height = (int)(width*0.8);
+                int width = (int) (srcBitmap.getWidth() * area.width() * scale);
+                int height = (int) (srcBitmap.getHeight() * area.height() * scale);
 
                 Bitmap dstBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(dstBitmap);
@@ -127,15 +127,8 @@ public final class ImageCropPlugin implements MethodCallHandler, PluginRegistry.
 
                 Rect srcRect = new Rect((int) (srcBitmap.getWidth() * area.left), (int) (srcBitmap.getHeight() * area.top),
                         (int) (srcBitmap.getWidth() * area.right), (int) (srcBitmap.getHeight() * area.bottom));
-                Bitmap croppedBmp = null;
-                try {
-                    croppedBmp = Bitmap.createBitmap(srcBitmap, (int) (srcBitmap.getWidth() * area.left), (int) (srcBitmap.getHeight() * area.top), width, height);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    croppedBmp = Bitmap.createBitmap(srcBitmap, 0, 0, width, height);
-                }
+                Bitmap croppedBmp = Bitmap.createBitmap(srcBitmap, (int) (srcBitmap.getWidth() * area.left), (int) (srcBitmap.getHeight() * area.top), width, height);
                 Rect dstRect = new Rect(0, 0, width, height);
-
                 canvas.drawBitmap(srcBitmap, srcRect, dstRect, paint);
                 Log.d(ImageCropPlugin.class.getSimpleName(),"srcW: "+srcBitmap.getWidth()+ "srcH: "+ srcBitmap.getHeight());
                 Log.d(ImageCropPlugin.class.getSimpleName(),"width: "+width+" Height: "+height );
@@ -276,7 +269,7 @@ public final class ImageCropPlugin implements MethodCallHandler, PluginRegistry.
             int readExternalStorage = getPermissionGrantResult(READ_EXTERNAL_STORAGE, permissions, grantResults);
             int writeExternalStorage = getPermissionGrantResult(WRITE_EXTERNAL_STORAGE, permissions, grantResults);
             permissionRequestResult.success(readExternalStorage == PackageManager.PERMISSION_GRANTED &&
-                                                    writeExternalStorage == PackageManager.PERMISSION_GRANTED);
+                    writeExternalStorage == PackageManager.PERMISSION_GRANTED);
             permissionRequestResult = null;
         }
         return false;
