@@ -115,7 +115,7 @@ public final class ImageCropPlugin implements MethodCallHandler, PluginRegistry.
 
 
                 int width = (int) (srcBitmap.getWidth() * area.width());
-                int height = (int) (srcBitmap.getHeight() * area.height());
+                int height = (int)(width*0.8);
 
                 Bitmap dstBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(dstBitmap);
@@ -129,7 +129,7 @@ public final class ImageCropPlugin implements MethodCallHandler, PluginRegistry.
                         (int) (srcBitmap.getWidth() * area.right), (int) (srcBitmap.getHeight() * area.bottom));
                 Bitmap croppedBmp = null;
                 try {
-                    croppedBmp = Bitmap.createBitmap(srcBitmap, (int) (srcBitmap.getWidth() * area.left), (int) (srcBitmap.getHeight() * area.top), height, width);
+                    croppedBmp = Bitmap.createBitmap(srcBitmap, (int) (srcBitmap.getWidth() * area.left), (int) (srcBitmap.getHeight() * area.top), width, height);
                 } catch (Exception e) {
                     e.printStackTrace();
                     croppedBmp = Bitmap.createBitmap(srcBitmap, 0, 0, width, height);
