@@ -47,7 +47,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       home: SafeArea(
         child: Container(
-          color: Colors.black,
+          color: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
           child: _sample == null ? _buildOpeningImage() : _buildCroppingImage(),
         ),
@@ -74,7 +74,7 @@ class _MyAppState extends State<MyApp> {
               FlatButton(
                 child: Text(
                   'Crop Image',
-                  style: Theme.of(context).textTheme.button.copyWith(color: Colors.white),
+                  style: Theme.of(context).textTheme.button.copyWith(color: Colors.black),
                 ),
                 onPressed: () => _cropImage(),
               ),
@@ -90,7 +90,7 @@ class _MyAppState extends State<MyApp> {
     return FlatButton(
       child: Text(
         'Open Image',
-        style: Theme.of(context).textTheme.button.copyWith(color: Colors.white),
+        style: Theme.of(context).textTheme.button.copyWith(color: Colors.black),
       ),
       onPressed: () => _openImage(),
     );
