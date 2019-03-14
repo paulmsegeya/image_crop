@@ -93,11 +93,26 @@ public final class ImageCropPlugin implements MethodCallHandler, PluginRegistry.
                     return;
                 }
 
-                Bitmap srcBitmap = BitmapFactory.decodeFile(path, null);
+                Bitmap srcBitmap = BitmapFactory.decodeFile(path);
                 if (srcBitmap == null) {
                     result.error("INVALID", "Image source cannot be decoded", null);
                     return;
                 }
+
+                try {
+                    srcBitmap = rotateImageIfRequired(srcBitmap,srcFile);
+                    File tempFile = createTemporaryImageFile();
+                    compressBitmap(srcBitmap, tempFile);
+                    srcBitmap = BitmapFactory.decodeFile(tempFile.getAbsolutePath());
+                    tempFile.delete();
+                    if (srcBitmap == null) {
+                        result.error("INVALID", "Image source cannot be decoded", null);
+                        return;
+                    }
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+
 
                 int width = (int) (srcBitmap.getWidth() * area.width() * scale);
                 int height = (int) (srcBitmap.getHeight() * area.height() * scale);
@@ -111,14 +126,22 @@ public final class ImageCropPlugin implements MethodCallHandler, PluginRegistry.
                 paint.setDither(true);
 
                 Rect srcRect = new Rect((int) (srcBitmap.getWidth() * area.left), (int) (srcBitmap.getHeight() * area.top),
-                                        (int) (srcBitmap.getWidth() * area.right), (int) (srcBitmap.getHeight() * area.bottom));
+                        (int) (srcBitmap.getWidth() * area.right), (int) (srcBitmap.getHeight() * area.bottom));
+                Bitmap croppedBmp = null;
+                try {
+                    croppedBmp = Bitmap.createBitmap(srcBitmap, (int) (srcBitmap.getWidth() * area.left), (int) (srcBitmap.getHeight() * area.top), width, height);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    croppedBmp = Bitmap.createBitmap(srcBitmap, 0, 0, width, height);
+                }
                 Rect dstRect = new Rect(0, 0, width, height);
 
                 canvas.drawBitmap(srcBitmap, srcRect, dstRect, paint);
-
+                Log.d(ImageCropPlugin.class.getSimpleName(),"srcW: "+srcBitmap.getWidth()+ "srcH: "+ srcBitmap.getHeight());
+                Log.d(ImageCropPlugin.class.getSimpleName(),"width: "+width+" Height: "+height );
                 try {
                     File dstFile = createTemporaryImageFile();
-                    compressBitmap(dstBitmap, dstFile);
+                    compressBitmap(croppedBmp, dstFile);
                     copyExif(srcFile, dstFile);
                     result.success(dstFile.getAbsolutePath());
                 } catch (IOException e) {
